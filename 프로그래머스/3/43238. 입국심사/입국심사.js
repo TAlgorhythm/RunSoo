@@ -1,6 +1,4 @@
 function solution(n, times) {
-    // 시간을 구해야 해...
-    // 가능한 최소시간 => 1 최대시간 => 가장 짧은애가... 다 검사해!
     times.sort((a, b)=>a-b);
     let min = 1;
     let max = times[0]*n;
