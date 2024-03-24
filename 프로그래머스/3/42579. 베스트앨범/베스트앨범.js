@@ -1,17 +1,8 @@
 function solution(genres, plays) {
-    // var answer = [];
-    // return answer;
-    
     const genrePlay = {};
     for (let i=0; i<genres.length; i++){
         genrePlay[genres[i]] = genrePlay[genres[i]]?genrePlay[genres[i]]+plays[i]:plays[i];
     }
-    
-//     const genrePlayArr = Object.entries(genrePlay);
-    
-//     genrePlayArr.sort((a,b)=>b[1]-a[1]);
-    
-//     console.log(genrePlay);
     
     const allSongs = new Array(genres.length);
     
@@ -19,13 +10,9 @@ function solution(genres, plays) {
         allSongs[i]={genre: genres[i], plays: plays[i], idx: i};
     }
     
-    allSongs.sort((a, b)=>{
-        if (genrePlay[b.genre]===genrePlay[a.genre]){
-            return b.plays-a.plays;
-        } else {
-            return genrePlay[b.genre]-genrePlay[a.genre];
-        }
-    })
+    allSongs.sort((a, b) => {
+        return genrePlay[b.genre] - genrePlay[a.genre] || b.plays - a.plays;
+    });
     
     const answer = [];
     let before = "";
