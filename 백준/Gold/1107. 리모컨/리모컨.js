@@ -30,7 +30,7 @@ function solution(arr) {
   // 1. 100에서 +, - 해서 갈 때 횟수
   const from100 = Math.abs(100 - N);
   // // 직접 누르는 것보다 이게 더 작으면 리턴
-  if (target.length >= from100 || buttons.size === 0) {
+  if (target.length >= from100) {
     return from100;
   }
 
@@ -49,41 +49,50 @@ function solution(arr) {
   }
   let press = Infinity;
 
-  let result = from100;
-
   // 아니면 어떤 수 만들지 -> 가장 가까운 더 큰 수, 작은 수
-  let bigger = N;
-  let smaller = N;
-
-  // 가능한지
-  function checkPress(number) {
-    const numArr = Array.from("" + number).map((el) => Number(el));
-    for (let i = 0; i < numArr.length; i++) {
-      if (!buttons.has(numArr[i])) {
-        return false;
-      }
-    }
-    return true;
+  const bigger = new Array(target.length).fill(Math.min(...[...buttons]));
+  const smaller = new Array(target.length).fill(Math.max(...[...buttons]));
+  for (let i = 0; i < idx; i++) {
+    bigger[i] = target[i];
+    smaller[i] = target[i];
   }
 
-  // 큰 수 구하기
-  while (true) {
-    bigger++;
-    if (String(bigger).length + bigger - N > result) break;
-    if (checkPress(bigger)) {
-      result = Math.min(result, String(bigger).length + bigger - N);
+  let big = Infinity;
+  let small = -1;
+  const buttonArr = [...buttons];
+  for (let i = 0; i < buttonArr.length; i++) {
+    if (buttonArr[i] > target[idx]) big = Math.min(buttonArr[i], big);
+    if (buttonArr[i] < target[idx]) small = Math.max(buttonArr[i], small);
+  }
+
+  if (big !== Infinity) {
+    bigger[idx] = big;
+    press = Math.min(press, Number(bigger.join("")) - N);
+    if (idx === 0) {
+      bigger.fill(Math.max(...buttonArr));
+      bigger[0] = 0;
+      press = Math.min(press, N - Number(bigger.join(""))) - 1;
+    }
+  }
+  if (small !== -1) {
+    smaller[idx] = small;
+    press = Math.min(press, N - Number(smaller.join("")));
+    if (idx === 0) {
+      smaller.fill(Math.min(...buttonArr));
+      if (buttons.has(0)) buttons.delete(0);
+      press =
+        Math.min(
+          press,
+          Number(
+            smaller[0] > 0
+              ? smaller[0]
+              : Math.min(...[...buttons]) + smaller.join("")
+          ) - N
+        ) + 1;
     }
   }
 
-  while (true) {
-    smaller--;
-    if (String(smaller).length + N - smaller > result) break;
-    if (checkPress(smaller)) {
-      result = Math.min(result, String(smaller).length + N - smaller);
-    }
-  }
-
-  return result;
+  return Math.min(from100, press + target.length);
 }
 
 console.log(solution(input));
