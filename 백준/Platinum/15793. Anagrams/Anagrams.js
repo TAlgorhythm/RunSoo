@@ -17,16 +17,6 @@ function solution(arr) {
   numB.forEach((el) => arrB[el]++);
 
   let target = strA.length;
-
-  for (let i = 0; i < arrA.length; i++) {
-    if (arrA[i] !== 0 && arrB[i] !== 0) {
-      const both = Math.min(arrA[i], arrB[i]);
-      arrA[i] -= both;
-      arrB[i] -= both;
-      target -= both;
-    }
-  }
-
   let move = 0;
 
   let idx = 0;
