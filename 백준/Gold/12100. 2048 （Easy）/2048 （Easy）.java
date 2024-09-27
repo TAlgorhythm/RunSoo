@@ -26,31 +26,35 @@ public class Main {
 
 	public static void dfs(int[][] board, int cnt) {
 		if (cnt == 5) {
-	        for (int r = 0; r < N; r++) {
-	            for (int c = 0; c < N; c++) {
-	                maxBlock = Math.max(maxBlock, board[r][c]);
-	            }
-	        }
-	        return;
-	    }
+			// 이동이 5번 이루어진 후 최종 보드 상태에서 maxBlock 갱신
+			for (int r = 0; r < N; r++) {
+				for (int c = 0; c < N; c++) {
+					maxBlock = Math.max(maxBlock, board[r][c]);
+				}
+			}
+			return;
+		}
 
-		int[][] upBoard = copyArr(board);
-		int[][] downBoard = copyArr(board);
-		int[][] leftBoard = copyArr(board);
-		int[][] rightBoard = copyArr(board);
+		for (int d = 0; d < 4; d++) {
+			int[][] newBoard = copyArr(board);
 
-		moveUp(upBoard);
-		dfs(upBoard, cnt + 1);
+			for (int rot = 0; rot < d; rot++) {
+				newBoard = rotate(newBoard);
+			}
 
-		moveDown(downBoard);
-		dfs(downBoard, cnt + 1);
+			moveUp(newBoard);
+			dfs(newBoard, cnt + 1);
+		}
+	}
 
-		moveLeft(leftBoard);
-		dfs(leftBoard, cnt + 1);
-
-		moveRight(rightBoard);
-		dfs(rightBoard, cnt + 1);
-
+	public static int[][] rotate(int[][] board) {
+		int[][] newBoard = new int[N][N];
+		for (int r = 0; r < N; r++) {
+			for (int c = 0; c < N; c++) {
+				newBoard[c][N - 1 - r] = board[r][c];
+			}
+		}
+		return newBoard;
 	}
 
 	public static void moveUp(int[][] board) {
@@ -69,66 +73,6 @@ public class Main {
 				}
 				maxBlock = Math.max(maxBlock, top);
 				board[rIdx++][c] = top;
-			}
-		}
-	}
-
-	public static void moveDown(int[][] board) {
-		for (int c = 0; c < N; c++) {
-			Queue<Integer> cQ = new LinkedList<>();
-			int rIdx = N - 1;
-			for (int r = N - 1; r >= 0; r--) {
-				if (board[r][c] != 0)
-					cQ.offer(board[r][c]);
-				board[r][c] = 0;
-			}
-			while (!cQ.isEmpty()) {
-				Integer top = cQ.poll();
-				if (top.equals(cQ.peek())) {
-					top += cQ.poll();
-					maxBlock = Math.max(maxBlock, top);
-				}
-				board[rIdx--][c] = top;
-			}
-		}
-	}
-
-	public static void moveLeft(int[][] board) {
-		for (int r = 0; r < N; r++) {
-			Queue<Integer> rQ = new LinkedList<>();
-			int cIdx = 0;
-			for (int c = 0; c < N; c++) {
-				if (board[r][c] != 0)
-					rQ.offer(board[r][c]);
-				board[r][c] = 0;
-			}
-			while (!rQ.isEmpty()) {
-				Integer top = rQ.poll();
-				if (top.equals(rQ.peek())) {
-					top += rQ.poll();
-					maxBlock = Math.max(maxBlock, top);
-				}
-				board[r][cIdx++] = top;
-			}
-		}
-	}
-
-	public static void moveRight(int[][] board) {
-		for (int r = 0; r < N; r++) {
-			Queue<Integer> rQ = new LinkedList<>();
-			int cIdx = N - 1;
-			for (int c = N - 1; c >= 0; c--) {
-				if (board[r][c] != 0)
-					rQ.offer(board[r][c]);
-				board[r][c] = 0;
-			}
-			while (!rQ.isEmpty()) {
-				Integer top = rQ.poll();
-				if (top.equals(rQ.peek())) {
-					top += rQ.poll();
-					maxBlock = Math.max(maxBlock, top);
-				}
-				board[r][cIdx--] = top;
 			}
 		}
 	}
